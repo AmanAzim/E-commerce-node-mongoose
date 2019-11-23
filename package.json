@@ -1,0 +1,33 @@
+{
+  "name": "first-node-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmanAzim/simple-node-server.git"
+  },
+  "author": "aman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmanAzim/simple-node-server/issues"
+  },
+  "homepage": "https://github.com/AmanAzim/simple-node-server#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.7.2",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "mongodb": "^3.3.4",
+    "mongoose": "^5.7.12",
+    "pug": "^2.0.4"
+  }
+}
