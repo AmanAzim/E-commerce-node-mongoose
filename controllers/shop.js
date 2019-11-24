@@ -8,6 +8,7 @@ exports.getDisplayProducts = (req, res, next) => {
                 products: products,
                 docTitle: 'All Products',
                 path: '/products-list',
+                isAuthenticated: req.isLoggedIn
             });// to render templates// send the data to the pug file
         })
         .catch(err => console.log(err));
@@ -21,6 +22,7 @@ exports.getProductDetail = (req, res, next) => {
                 docTitle: product.title,
                 product: product,
                 path: '/products-list',
+                isAuthenticated: req.isLoggedIn
             });
         })
         .catch(err => console.log(err));
@@ -33,6 +35,7 @@ exports.getIndex = (req, res, next) => {
                 products: products,
                 docTitle: 'Index',
                 path: '/index',
+                isAuthenticated: req.isLoggedIn
             });
         })
         .catch(err => console.log(err));
@@ -46,6 +49,7 @@ exports.getCart = (req, res, next) => {
                 docTitle: 'Your Cart',
                 path: '/cart',
                 cartProductsInfo: user.cart.items,
+                isAuthenticated: req.isLoggedIn
             });
         })
         .catch( err => console.log(err));
@@ -103,6 +107,7 @@ exports.getOrders = (req, res, next) => {
                 docTitle: 'Orders',
                 path: '/orders',
                 orders: orders,
+                isAuthenticated: req.isLoggedIn
             });
         })
         .catch(err => console.log(err));
@@ -111,6 +116,7 @@ exports.getOrders = (req, res, next) => {
 exports.getCheckout = (req, res, next) => {
     res.render('shop/checkout', {
         docTitle: 'Checkout',
-        path: '/checkout'
+        path: '/checkout',
+        isAuthenticated: req.isLoggedIn
     });
 };

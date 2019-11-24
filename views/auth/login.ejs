@@ -1,0 +1,22 @@
+<%- include('../layouts/head')%>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/form.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <%- include('../layouts/navigation')%>
+    <main>
+        <form class="login-form" action="/login" method="post">
+            <div class="form-control">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email">
+            </div>
+            <div class="form-control">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+            </div>
+
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </main>
+<%- include('../layouts/end') %>
