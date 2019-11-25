@@ -25,7 +25,7 @@ exports.postAddProducts = (req, res, next) => {
 };
 
 exports.getAdminProductsList = (req, res, next) => {
-     Product.find()// a mongoose method
+     Product.find({ userId: req.user._id })// a mongoose method
         //.select('title price -_id')//only picks these fields from the collection bbut no id
         //.populate('userId', 'username')// check the full database to retrieve any data related the userId (means the user's username data)
         .then( products => {
@@ -69,20 +69,24 @@ exports.postEditProduct = (req, res, next) => {
 
     Product.findById(productId)
          .then( product => {
+            if (product.userId.toString() !== req.user._id.toString()) {
+                return res.redirect('/');
+            }
             product.title = updatedTitle;
             product.price = updatedPrice;
             product.imgUrl = updatedImgUrl;
             product.description = updatedDescription;
-            return product.save();
+            return product.save().then( result => {
+                res.redirect('/admin/products-list');
+            });
          })
-         .then( result => {
-            res.redirect('/admin/products-list');
-         }).catch(err => console.log(err));
+         .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
-    Product.findByIdAndRemove(productId).then(() => {
-        res.redirect('/admin/products-list');
-    }).catch(err => console.log(err));
+    Product.deleteOne({ _id: productId, userId: req.user._id })
+        .then(() => {
+            res.redirect('/admin/products-list');
+        }).catch(err => console.log(err));
 };
