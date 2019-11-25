@@ -103,6 +103,7 @@ main {
   color: #e67345;
   background: white;
   border-radius: 3px;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -198,3 +199,27 @@ main {
   z-index: 5;
   display: none;
 }
+
+.user-msg {
+  margin: auto;
+  width: 90%;
+  border: 1px solid blue;
+  background-color: #f3eaff;
+  padding: 0.5rem;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.user-msg-error {
+  border-color: red;
+  background-color: #ff878e;
+}
+
+@media (min-width: 768px) {
+   .user-msg {
+      width: 30rem;
+   }
+
+}
+
+

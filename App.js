@@ -5,6 +5,8 @@ const app = express();
 const mongoose = require('mongoose');
 const session = require('express-session');//for session
 const MongoDBSrote = require('connect-mongodb-session')(session);//for storing the session in mongoDB
+const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const MONGODB_URI = 'mongodb+srv://aman_azim:aman@cluster0-hq0lj.mongodb.net/shop';
 
@@ -13,6 +15,8 @@ const store = new MongoDBSrote({
     collection: 'session', //the name of the collection in mongoDB where it will be stored
     //cookie: {}// to store cookie related info
 });
+
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');//"set" allows us to set any blobal value in our app. can be key-value.//Use "pug" as view creating engine
 app.set('views', 'views');// Find the views from "views" directory.
@@ -35,12 +39,25 @@ app.use(session({
     store: store,
 }));
 
+app.use(csrfProtection);
+
+app.use(flash());// it will allow us to store error message in a session before redirecring and delete the message from session after showing it 1 time
+
 app.use((req, res, next) => {
-    User.findById('5dd951731ee06802247dc9b8')
-        .then( user => {
-            req.user = user;//a full mongoose model
-            next();
-        }).catch(err => console.log(err));
+    if ( !req.session.user ) {
+        return next();
+    }
+    User.findById(req.session.user._id)
+    .then( user => {
+        req.user = user;
+        next();
+    }).catch(err => console.log(err));
+});
+
+app.use((req, res, next) => {//all local variables that will be passed to all the views
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
 
 app.use('/admin', adminRouter);//only url with '/admin' will be handled by this route file
@@ -55,18 +72,5 @@ app.use((req, res, next) => {//It will handle all unknown routes
 
 mongoose.connect(MONGODB_URI)
     .then( result => {
-        User.findOne().then( user => {
-            if (!user) {
-                 const user = new User({
-                    username: 'aman',
-                    email: 'aman@gmail.com',
-                    cart: {
-                        items: []
-                    }
-                 });
-                 user.save();
-            }
-        });
-
         app.listen(3000);
     }).catch(err => console.log(err));

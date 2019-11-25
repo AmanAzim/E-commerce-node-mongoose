@@ -10,7 +10,9 @@
         </div>
         <h2><%= product.price %></h2>
         <p><%= product.description %></p>
-        <%- include('../layouts/add-to-cart') %>
+        <% if (isAuthenticated) { %>
+            <%- include('../layouts/add-to-cart', {product: product}) %> <!--Because "product" is a local variable of the for loop so we need to pass it to the include in this way-->
+        <% } %>
     </main>
 </body>
 </html>
