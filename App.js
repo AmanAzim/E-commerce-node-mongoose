@@ -7,6 +7,7 @@ const session = require('express-session');//for session
 const MongoDBSrote = require('connect-mongodb-session')(session);//for storing the session in mongoDB
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const MONGODB_URI = 'mongodb+srv://aman_azim:aman@cluster0-hq0lj.mongodb.net/shop';
 
@@ -30,8 +31,34 @@ const errorController = require('./controllers/error');
 //parses the raw request body sent through <form>
 app.use(bodyParser.urlencoded({extended: false}));
 
+//For non text files like image
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');//to store the file in the "images" folder
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);//to name the uploaded file
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('img')
+);
+
 //Serves static files such as css files// grant read access to static files// With this user can access the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));//if we have a request that that goes to this address than serve the files statically
 
 app.use(session({
     secret: 'my secret',
