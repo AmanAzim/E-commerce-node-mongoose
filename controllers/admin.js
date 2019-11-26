@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Product = require('../models/product');
+const mongoose = require('mongoose');
 
 exports.getAddProducts = (req, res, next) => {
     res.render('admin/edit-product', {
@@ -37,7 +38,18 @@ exports.postAddProducts = (req, res, next) => {
         .then( result => {
             res.redirect('/admin/products-list');
         }).catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);//When it will arrive Express will skip all the middle wear and switch to error handling middle ware
+            /* return res.status(500).render('admin/edit-product', {
+                docTitle: 'Add products',
+                path: '/add-product',
+                editing: false,
+                hasError: true,
+                errorMessage: 'Database operation failed ! please, try again.',
+                validationError: [],
+                product: { title, imgUrl, price, description }
+             });*/
         });
 };
 
@@ -46,14 +58,17 @@ exports.getAdminProductsList = (req, res, next) => {
         //.select('title price -_id')//only picks these fields from the collection bbut no id
         //.populate('userId', 'username')// check the full database to retrieve any data related the userId (means the user's username data)
         .then( products => {
-            console.log(products);
             res.render('admin/products-list', {
                 products: products,
                 docTitle: 'Admin products list',
                 path: 'admin/products-list',
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 exports.getEditProducts = (req, res, next) => {
@@ -76,7 +91,11 @@ exports.getEditProducts = (req, res, next) => {
                 product: product
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -113,7 +132,11 @@ exports.postEditProduct = (req, res, next) => {
                 res.redirect('/admin/products-list');
             });
          })
-         .catch(err => console.log(err));
+         .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+         });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -121,5 +144,9 @@ exports.postDeleteProduct = (req, res, next) => {
     Product.deleteOne({ _id: productId, userId: req.user._id })
         .then(() => {
             res.redirect('/admin/products-list');
-        }).catch(err => console.log(err));
+        }).catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };

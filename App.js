@@ -25,6 +25,7 @@ const adminRouter = require('./routes/admin');
 const shopRouter = require('./routes/shop');
 const authRouter = require('./routes/auth');
 const User = require('./models/user');
+const errorController = require('./controllers/error');
 
 //parses the raw request body sent through <form>
 app.use(bodyParser.urlencoded({extended: false}));
@@ -49,9 +50,14 @@ app.use((req, res, next) => {
     }
     User.findById(req.session.user._id)
     .then( user => {
+        if (!user) {
+            return next();
+        }
         req.user = user;
         next();
-    }).catch(err => console.log(err));
+    }).catch(err => {
+        next(new Error(err));// Inside then/catch/callback or any async code we need to throw error like this
+    });
 });
 
 app.use((req, res, next) => {//all local variables that will be passed to all the views
@@ -66,8 +72,19 @@ app.use(shopRouter);
 
 app.use(authRouter);
 
+app.get('/500', errorController.get500);
+
 app.use((req, res, next) => {//It will handle all unknown routes
     res.status(404).render('404', { docTitle: 'Page Not Found', path: 'non'});
+});
+
+app.use((error, req, res, next) => {//Error handling middle ware
+    //res.redirect('/500');// might cause infinite loop
+    res.status(500).render('500', {
+        docTitle: 'Error!',
+        path: '/500',
+        isAuthenticated: req.session.isLoggedIn
+    });
 });
 
 mongoose.connect(MONGODB_URI)
