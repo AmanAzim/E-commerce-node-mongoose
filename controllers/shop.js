@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -164,6 +165,20 @@ exports.getInvoice = (req, res, next) => {
             const invoiceName = `invoice-${orderId}.pdf`;
             const invoicePath = path.join('data', 'invoices', invoiceName);
 
+            const pdfDoc = new PDFDocument();
+            res.setHeader('Content-Type', 'application/pdf');//send as pdf
+            res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);// to make the pdf open in the browser on click
+            pdfDoc.pipe(fs.createReadStream(invoicePath));//It makes sure the genereted pdf also gets saved in the directory not only servein to client
+            pdfDoc.pipe(res);
+            pdfDoc.fontSize(26).text('Invoice', { underline: true });
+            pdfDoc.text('----------------------------------------------');
+            let totalPrice = 0;
+            order.products.forEach( prod => {
+                totalPrice += prod.quantity * prod.product.price;
+                pdfDoc.fontSize(14).text(prod.product.title+' - '+prod.quentity+' x '+' $ '+prod.product.price);
+            });
+            pdfDoc.fontSize(20).text(`Total price: $${totalPrice}`);
+            pdfDoc.end();
             //For reading file (inefficient)
           /*fs.readFile(invoicePath, (err, data) => {
                 if (err) {
@@ -176,11 +191,11 @@ exports.getInvoice = (req, res, next) => {
             });*/
 
             //For streaming
-            const file = fs.createReadStream(invoicePath);
+          /*const file = fs.createReadStream(invoicePath);
             res.setHeader('Content-Type', 'application/pdf');//send as pdf
             res.setHeader('Content-Disposition', `inline; filename="${invoiceName}"`);// to make the pdf open in the browser on click
             //res.setHeader('Content-Disposition', `attachment; filename="${invoiceName}"`);
-            file.pipe(res);//Forward the read data to response
-    })
+            file.pipe(res);//Forward the read data to response*/
+        })
         .catch( err => next(err));
 };
