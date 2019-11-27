@@ -215,6 +215,26 @@ main {
   background-color: #ff878e;
 }
 
+.pagination {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #e67345;
+    padding: 0.5rem;
+    border: 1px solid #e67345;
+    margin: 0 1rem;
+}
+
+.pagination a:hover,
+.pagination a:active,
+.pagination a.active {
+    background-color: #e67345;
+    color: white;
+}
+
 @media (min-width: 768px) {
    .user-msg {
       width: 30rem;
@@ -226,5 +246,7 @@ main {
 .form-control textarea.invalid {
     border-color: red;
 }
+
+
 
 

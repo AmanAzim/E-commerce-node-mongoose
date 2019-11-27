@@ -75,7 +75,7 @@ exports.getAdminProductsList = (req, res, next) => {
             res.render('admin/products-list', {
                 products: products,
                 docTitle: 'Admin products list',
-                path: 'admin/products-list',
+                path: '/admin/products-list',
             });
         })
         .catch(err => {
