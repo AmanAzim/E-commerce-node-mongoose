@@ -20,14 +20,10 @@
                             <p class="product__description"><%= product.description %></p>
                         </div>
                         <div class="card__actions">
-                            <button class="btn">
-                                <a href="/admin/edit-product/<%= product._id %>?edit=true">Edit</a>
-                            </button>
-                            <form action="/admin/delete-product" method="post">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <input type="hidden" name="productId" value="<%= product._id %>">
-                                <button class="btn">Delete</button>
-                            </form>
+                            <a href="/admin/edit-product/<%= product._id %>?edit=true" class="btn">Edit</a>
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <input type="hidden" name="productId" value="<%= product._id %>">
+                            <button class="btn" onclick="deleteProduct(this)">Delete</button><!--This refers to the element which holds the function means the button -->
                         </div>
                     </article>
                 <% } %>
@@ -36,5 +32,5 @@
             <h1>No products found !</h1>
         <% } %>
     </main>
-</body>
-</html>
+<%- include('../layouts/end') %>
+<script src="/js/admin.js"></script>

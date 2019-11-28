@@ -1,9 +1,33 @@
 <%- include('../layouts/head')%>
+  <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
     <%- include('../layouts/navigation')%>
     <main>
-        <h1>Checkout</h1>
+          <ul class="cart__item-list">
+                <% cartProductsInfo.forEach( productInfo => { %>
+                    <li class="cart__item">
+                        <h1><%= productInfo.productId.title %></h1>
+                        <h1>Quantity: <%= productInfo.quantity %></h1>
+                    </li>
+                <% }) %>
+          </ul>
+          <div class="centered">
+              <h2>Total: <%= totalSum %> </h2>
+          </div>
+          <div class="centered">
+              <button id="order-btn" class="btn">Order</button>
+              <script src="https://js.stripe.com/v3/"></script>
+              <script>
+                  var stripe = Stripe('pk_test_swFKVlPO5mhraMOjWaywNDLv00Jh4hB4rr');
+                  var orderBtn = document.getElementById('order-btn');
+                  console.log('orderButton', orderBtn);
+                  orderBtn.addEventListener('click', function () {
+                      stripe.redirectToCheckout({
+                          sessionId: '<%= sessionId %>'
+                      });
+                  });
+              </script>
+          </div>
     </main>
-</body>
-</html>
+<%- include('../layouts/end') %>

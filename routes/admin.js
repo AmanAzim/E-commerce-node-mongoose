@@ -43,6 +43,9 @@ router.post('/edit-product',
     adminController.postEditProduct
 );
 
-router.post('/delete-product', isAuth, adminController.postDeleteProduct);
+//router.post('/delete-product', isAuth, adminController.postDeleteProduct);
+
+//This is a real api route handler which can listen to React axios call
+router.delete('/product/:productId', isAuth, adminController.deleteProduct);//For client side js to work
 
 module.exports = router;

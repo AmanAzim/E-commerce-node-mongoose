@@ -28,7 +28,7 @@ const authRouter = require('./routes/auth');
 const User = require('./models/user');
 const errorController = require('./controllers/error');
 
-//parses the raw request body sent through <form>
+//parses the raw request body sent through <form>//For string only data
 app.use(bodyParser.urlencoded({extended: false}));
 
 //For non text files like image
@@ -52,7 +52,7 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
-app.use(
+app.use(//To parse incoming non string files
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('img')
 );
 

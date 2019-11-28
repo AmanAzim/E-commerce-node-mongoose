@@ -155,7 +155,7 @@ exports.postEditProduct = (req, res, next) => {
             return next(error);
          });
 };
-
+/*
 exports.postDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
 
@@ -172,5 +172,24 @@ exports.postDeleteProduct = (req, res, next) => {
         const error = new Error(err);
         error.httpStatusCode = 500;
         return next(error);
+    });
+};*/
+
+//This is a real API handler which can act on React Axios call
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.params.productId;//As we dont send productId using req.body but request params
+
+    Product.findById(productId).then( product => {
+        if (!product) {
+            return next(new Error('Product not found!'));
+        }
+        //fileHelper.deleteFile(product.imgUrl);
+        return Product.deleteOne({ _id: productId, userId: req.user._id });
+    })
+    .then(result => {
+        //res.redirect('/admin/products-list');//Because we dont want to reload the page upon deleting
+        res.status(200).json({ message: 'Success!' });
+    }).catch(err => {
+        res.status(500).json({ message: 'Failure!' });
     });
 };
